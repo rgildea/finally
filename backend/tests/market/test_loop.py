@@ -167,15 +167,6 @@ async def test_polling_loop_backs_off_60s_on_429():
 
     mock_source.get_prices = rate_limited_get_prices
 
-    task = asyncio.create_task(
-        polling_loop(mock_source, lambda: ["AAPL"], interval_seconds=0.05)
-    )
-
-    # Monkeypatch asyncio.sleep inside the loop module for the duration of this test
-    import app.market.loop as loop_module
-    original_sleep = asyncio.sleep
-    loop_module_sleep_target = loop_module
-
     # We run the loop briefly; the first 429 should trigger a 60s back-off sleep call.
     # We cancel before the actual 60s elapses — we only check what value was passed.
     import unittest.mock
