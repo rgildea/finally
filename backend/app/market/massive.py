@@ -36,6 +36,8 @@ class MassiveAPIClient(MarketDataSource):
         self._client: httpx.AsyncClient | None = None
 
     async def start(self) -> None:
+        if self._client is not None:
+            return
         self._client = httpx.AsyncClient(timeout=self._timeout)
         logger.info("Massive API client started (base_url=%s)", self._base_url)
 
@@ -109,10 +111,10 @@ class MassiveAPIClient(MarketDataSource):
     def _extract_price(item: dict) -> float | None:
         """Extract the best available price from a snapshot item."""
         last_trade = item.get("lastTrade") or {}
-        if p := last_trade.get("p"):
+        if (p := last_trade.get("p")) is not None:
             return float(p)
         day = item.get("day") or {}
-        if c := day.get("c"):
+        if (c := day.get("c")) is not None:
             return float(c)
         return None
 
