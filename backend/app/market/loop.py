@@ -2,6 +2,8 @@ import asyncio
 import logging
 from collections.abc import Callable
 
+import httpx
+
 from .cache import price_cache
 from .interface import MarketDataSource, PriceUpdate
 
@@ -34,6 +36,15 @@ async def polling_loop(
                 await price_cache.update_many(merged)
         except asyncio.CancelledError:
             raise
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429:
+                logger.warning("Massive API rate limited — backing off 60s")
+                await asyncio.sleep(60)
+                continue
+            logger.error(
+                "Massive API HTTP %d in polling loop — will retry",
+                e.response.status_code,
+            )
         except Exception:
             logger.exception("Error in polling loop — will retry next cycle")
         await asyncio.sleep(interval_seconds)

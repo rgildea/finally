@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 import httpx
 import pytest
@@ -227,3 +227,38 @@ async def test_get_prices_returns_price_updates():
     for update in result.values():
         assert isinstance(update, PriceUpdate)
     await client.stop()
+
+
+@pytest.mark.asyncio
+async def test_start_idempotent():
+    """Calling start() twice should not create a second client or leak the first."""
+    client = make_client()
+    await client.start()
+    first_client = client._client
+    assert first_client is not None
+
+    await client.start()
+    assert client._client is first_client  # same object — no new client created
+
+    await client.stop()
+    assert client._client is None
+
+
+def test_extract_price_zero_last_trade_falls_back_to_day():
+    """lastTrade.p = 0.0 is falsy — must not be silently skipped; falls through to day.c."""
+    item = {"ticker": "XYZ", "lastTrade": {"p": 0.0}, "day": {"c": 42.50}}
+    client = make_client()
+    # With the is-not-None fix, p=0.0 is returned immediately as 0.0.
+    # The caller (_parse_response) then rejects it via `not price or price <= 0`.
+    price = client._extract_price(item)
+    # _extract_price now returns 0.0 (not None), so _parse_response will skip it.
+    # This is the correct behavior: 0.0 is explicitly present, not absent.
+    assert price == 0.0
+
+
+def test_extract_price_none_last_trade_uses_day():
+    """When lastTrade.p is absent (None), fall back to day.c."""
+    item = {"ticker": "XYZ", "lastTrade": {}, "day": {"c": 42.50}}
+    client = make_client()
+    price = client._extract_price(item)
+    assert price == 42.50

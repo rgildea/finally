@@ -1,4 +1,5 @@
 import asyncio
+import dataclasses
 import logging
 import math
 import random
@@ -32,8 +33,10 @@ _DEFAULT_TICKERS: dict[str, TickerConfig] = {
     "V":     TickerConfig(seed_price=275.00, mu=0.10, sigma=0.20, sector="Finance"),
 }
 
-# Correlation coefficient ρ per sector.
+# Factor loadings ρ per sector (not pairwise correlations).
 # Z_ticker = ρ·Z_sector + √(1-ρ²)·Z_idiosyncratic
+# Pairwise return correlation between two tickers in the same sector = ρ².
+# E.g. Tech ρ=0.60 → pairwise correlation ≈ 0.36 between AAPL and MSFT.
 _DEFAULT_CORRELATIONS: dict[str, float] = {
     "Tech":    0.60,
     "EV/Tech": 0.40,  # TSLA has partial tech correlation
@@ -50,7 +53,7 @@ class SimulatorConfig:
     tickers: dict[str, TickerConfig] = field(default_factory=lambda: dict(_DEFAULT_TICKERS))
     sector_correlations: dict[str, float] = field(default_factory=lambda: dict(_DEFAULT_CORRELATIONS))
     tick_interval_seconds: float = 0.5
-    event_probability: float = 0.001   # Per tick, per ticker
+    event_probability: float = 0.001   # Per tick, globally (one random ticker selected if fired)
     event_magnitude_min: float = 0.02  # 2% minimum shock
     event_magnitude_max: float = 0.05  # 5% maximum shock
 
@@ -102,8 +105,8 @@ class MarketSimulator(MarketDataSource):
         result: dict[str, PriceUpdate] = {}
         for ticker in tickers:
             if ticker not in self._prices:
-                # Dynamically add unknown tickers with fallback config
-                self._config.tickers[ticker] = _FALLBACK_CONFIG
+                # Dynamically add unknown tickers with fallback config (copy, not alias)
+                self._config.tickers[ticker] = dataclasses.replace(_FALLBACK_CONFIG)
                 self._prices[ticker] = _FALLBACK_CONFIG.seed_price
             price = round(self._prices[ticker], 2)
             result[ticker] = PriceUpdate(
