@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/*
+  FinAlly terminal design system.
+  Dark "cockpit" surfaces, hairline borders, brand yellow signature,
+  semantic green/red ticks, monospace tabular numerics.
+*/
+@theme {
+  /* Surfaces */
+  --color-terminal: #0d1117;
+  --color-surface: #131a23;
+  --color-surface-raised: #182230;
+  --color-surface-inset: #0a0e14;
+
+  /* Hairlines */
+  --color-line: #232c3a;
+  --color-line-strong: #33415a;
+
+  /* Foreground */
+  --color-fg-primary: #e6edf3;
+  --color-fg-muted: #8b98a9;
+  --color-fg-faint: #57637a;
+
+  /* Brand */
+  --color-brand: #ecad0a;
+  --color-brand-dim: #8a6606;
+  --color-blue: #209dd7;
+  --color-purple: #753991;
+  --color-purple-bright: #9b54bd;
+
+  /* Semantic ticks */
+  --color-up: #2bd576;
+  --color-up-dim: #123524;
+  --color-down: #ff5252;
+  --color-down-dim: #3a1414;
+
+  /* Fonts */
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Tick flash + UI animations */
+  --animate-flash-up: flash-up 600ms ease-out;
+  --animate-flash-down: flash-down 600ms ease-out;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+  --animate-fade-up: fade-up 400ms ease-out both;
+
+  @keyframes flash-up {
+    0% {
+      background-color: color-mix(in srgb, var(--color-up) 35%, transparent);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  @keyframes flash-down {
+    0% {
+      background-color: color-mix(in srgb, var(--color-down) 35%, transparent);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  /* Subtle layered grid + radial glow gives the cockpit depth */
+  background-image:
+    radial-gradient(
+      120% 80% at 80% -10%,
+      color-mix(in srgb, var(--color-blue) 8%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      90% 70% at 0% 0%,
+      color-mix(in srgb, var(--color-brand) 5%, transparent) 0%,
+      transparent 50%
+    ),
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    44px 44px,
+    44px 44px;
+  background-attachment: fixed;
+}
+
+/* Numeric cells use tabular figures so columns never jitter as digits change */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Thin custom scrollbars to keep the dense layout clean */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

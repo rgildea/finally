@@ -1,0 +1,33 @@
+# Version control
+.git
+.gitignore
+
+# Docker / scripts artifacts
+docker-compose.yml
+docker-compose.test.yml
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Runtime database (mounted as a volume at runtime)
+db/
+
+# Project docs and tests not needed in the image
+planning/
+test/
+README.md
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+backend/.venv/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/tests/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/

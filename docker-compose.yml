@@ -1,0 +1,18 @@
+services:
+  finally:
+    build: .
+    image: finally
+    container_name: finally
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Land the SQLite file on the named volume mounted at /app/db.
+      FINALLY_DB_PATH: /app/db/finally.db
+    volumes:
+      - finally-data:/app/db
+    restart: unless-stopped
+
+volumes:
+  finally-data:

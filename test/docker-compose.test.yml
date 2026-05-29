@@ -1,0 +1,34 @@
+# E2E test stack: builds the production image and runs it with the mock LLM so
+# Playwright can assert deterministic chat behavior. Playwright itself runs on
+# the host (npm run test in test/), pointed at http://localhost:8010.
+#
+# Host port 8010 is used (mapped to container 8000) to avoid colliding with
+# anything already bound to host 8000.
+#
+# Usage (from repo root):
+#   docker compose -f test/docker-compose.test.yml up --build -d
+#   cd test && BASE_URL=http://localhost:8010 npm test
+#   docker compose -f test/docker-compose.test.yml down -v
+#
+# A fresh volume each run guarantees the seeded $10k cash and default
+# watchlist. Set FRESH_VOLUME=true when running Playwright to assert exact cash.
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      LLM_MOCK: "true"
+      # Force the simulator (0.5s cadence, no network): an empty key selects it
+      # regardless of any value the environment might otherwise inject.
+      MASSIVE_API_KEY: ""
+      OPENROUTER_API_KEY: "test-not-used-in-mock"
+    ports:
+      - "8010:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/health').status==200 else 1)"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+    # Ephemeral DB: no named volume so each `up` starts from the seed.
