@@ -1,5 +1,7 @@
-# Build (if needed) and run the FinAlly container on http://localhost:8000.
-# Idempotent: safe to run repeatedly. Pass -Build to force a rebuild.
+# Build and run the FinAlly container on http://localhost:8000.
+# Idempotent: safe to run repeatedly. Always rebuilds so source changes are
+# picked up; Docker's layer cache makes an unchanged rebuild fast and prevents
+# serving a stale frontend. Pass -Build to force a clean --no-cache rebuild.
 param([switch]$Build)
 
 $ErrorActionPreference = "Stop"
@@ -17,9 +19,12 @@ if (-not (Test-Path ".env")) {
     Copy-Item ".env.example" ".env"
 }
 
-$imageExists = docker image inspect $Image 2>$null
-if ($Build -or -not $imageExists) {
-    Write-Host "Building image '$Image'..."
+# Always build; the layer cache skips unchanged steps (incl. the frontend build),
+# so a no-op run is fast while source changes are always picked up.
+Write-Host "Building image '$Image'..."
+if ($Build) {
+    docker build --no-cache -t $Image .
+} else {
     docker build -t $Image .
 }
 

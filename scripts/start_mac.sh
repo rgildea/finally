@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Build (if needed) and run the FinAlly container on http://localhost:8000.
-# Idempotent: safe to run repeatedly. Pass --build to force a rebuild.
+# Build and run the FinAlly container on http://localhost:8000.
+# Idempotent: safe to run repeatedly. Always rebuilds so source changes are
+# picked up; Docker's layer cache makes an unchanged rebuild fast and prevents
+# serving a stale frontend. Pass --build to force a clean --no-cache rebuild.
 set -euo pipefail
 
 IMAGE="finally"
@@ -11,18 +13,18 @@ PORT="8000"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-FORCE_BUILD="false"
-[[ "${1:-}" == "--build" ]] && FORCE_BUILD="true"
+NO_CACHE=""
+[[ "${1:-}" == "--build" ]] && NO_CACHE="--no-cache"
 
 if [[ ! -f .env ]]; then
   echo "No .env found; copying .env.example. Edit it to add your OPENROUTER_API_KEY."
   cp .env.example .env
 fi
 
-if [[ "$FORCE_BUILD" == "true" ]] || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-  echo "Building image '$IMAGE'..."
-  docker build -t "$IMAGE" .
-fi
+# Always build; the layer cache skips unchanged steps (incl. the frontend build),
+# so a no-op run is fast while source changes are always picked up.
+echo "Building image '$IMAGE'..."
+docker build $NO_CACHE -t "$IMAGE" .
 
 # Friendly hint about the market data source (does not mutate .env).
 MASSIVE_KEY="$(grep -E '^MASSIVE_API_KEY=' .env | tail -1 | cut -d= -f2- || true)"
