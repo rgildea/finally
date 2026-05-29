@@ -25,7 +25,7 @@ if [[ "$FORCE_BUILD" == "true" ]] || ! docker image inspect "$IMAGE" >/dev/null 
 fi
 
 # Friendly hint about the market data source (does not mutate .env).
-MASSIVE_KEY="$(grep -E '^MASSIVE_API_KEY=' .env | tail -1 | cut -d= -f2-)"
+MASSIVE_KEY="$(grep -E '^MASSIVE_API_KEY=' .env | tail -1 | cut -d= -f2- || true)"
 if [[ -n "$MASSIVE_KEY" ]]; then
   echo "Using Massive live data; blank MASSIVE_API_KEY in .env to use the simulator."
 fi
