@@ -31,6 +31,7 @@ async def test_lifespan_startup():
     with (
         patch.object(main_module, "create_market_data_source", return_value=mock_source),
         patch.object(main_module, "init_db") as mock_init_db,
+        patch.object(main_module, "polling_loop", new=AsyncMock()),
     ):
         async with app.router.lifespan_context(app):
             pass
