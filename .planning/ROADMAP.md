@@ -13,7 +13,7 @@ Starting from a completed market data layer (GBM simulator, Massive API client, 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Backend Foundation** - FastAPI app with lifespan, SQLite database with lazy init and seed data
+- [x] **Phase 1: Backend Foundation** - FastAPI app with lifespan, SQLite database with lazy init and seed data (completed 2026-05-29)
 - [ ] **Phase 2: Backend APIs** - SSE price streaming, portfolio CRUD, watchlist management, and backend unit tests
 - [ ] **Phase 3: LLM Chat Integration** - LiteLLM to Cerebras structured output, auto-trade execution, mock mode
 - [ ] **Phase 4: Frontend Trading Terminal** - Dark terminal UI, watchlist with price flashes, charts, portfolio heatmap, trade bar, SSE connection
@@ -36,11 +36,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Wave 1**
 
-  - [ ] 01-01-PLAN.md — SQLite database layer: schema, idempotent seed, connection helper, watchlist callable (DB-01, DB-02, DB-03)
+  - [x] 01-01-PLAN.md — SQLite database layer: schema, idempotent seed, connection helper, watchlist callable (DB-01, DB-02, DB-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-  - [ ] 01-02-PLAN.md — FastAPI app with lifespan, health endpoint, conditional static mount (APP-01, APP-02, APP-03)
+  - [x] 01-02-PLAN.md — FastAPI app with lifespan, health endpoint, conditional static mount (APP-01, APP-02, APP-03)
 
 ### Phase 2: Backend APIs
 
@@ -128,7 +128,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Foundation | 0/2 | Not started | - |
+| 1. Backend Foundation | 2/2 | Complete   | 2026-05-29 |
 | 2. Backend APIs | 0/TBD | Not started | - |
 | 3. LLM Chat Integration | 0/TBD | Not started | - |
 | 4. Frontend Trading Terminal | 0/TBD | Not started | - |
