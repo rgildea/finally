@@ -30,7 +30,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. `GET /api/health` returns `{"status": "ok"}`
   3. On first startup, all six SQLite tables are created and the default user profile plus 10 watchlist tickers are seeded — with no manual step required
   4. Subsequent startups with an existing database do not re-seed or error
-**Plans**: TBD
+**Plans**: 2 plans
+  - [ ] 01-01-PLAN.md — SQLite database layer: schema, idempotent seed, connection helper, watchlist callable (DB-01, DB-02, DB-03)
+  - [ ] 01-02-PLAN.md — FastAPI app with lifespan, health endpoint, conditional static mount (APP-01, APP-02, APP-03)
 
 ### Phase 2: Backend APIs
 **Goal**: All REST and SSE endpoints are functional and unit-tested — prices stream over SSE, portfolio and trade endpoints work correctly, and watchlist management persists to the database
@@ -103,9 +105,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Foundation | 0/TBD | Not started | - |
+| 1. Backend Foundation | 0/2 | Not started | - |
 | 2. Backend APIs | 0/TBD | Not started | - |
 | 3. LLM Chat Integration | 0/TBD | Not started | - |
 | 4. Frontend Trading Terminal | 0/TBD | Not started | - |
 | 5. AI Chat Panel | 0/TBD | Not started | - |
 | 6. Docker and E2E Tests | 0/TBD | Not started | - |
+</content>
