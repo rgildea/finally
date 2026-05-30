@@ -56,7 +56,19 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. `GET /api/watchlist`, `POST /api/watchlist`, and `DELETE /api/watchlist/{ticker}` all function correctly and the polling loop reflects watchlist changes on its next cycle
   6. Backend unit tests cover trade execution logic, P&L calculations, and API route response shapes
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+**Wave 1**
+
+  - [ ] 02-01-PLAN.md — SSE price streaming endpoint + busy_timeout pragma (STRM-01, STRM-02, STRM-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+  - [ ] 02-02-PLAN.md — Portfolio read, atomic trade execution, history, snapshot recorder (PORT-01, PORT-02, PORT-03, PORT-04, PORT-05, PORT-06, TEST-01, TEST-02, TEST-04)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+  - [ ] 02-03-PLAN.md — Watchlist CRUD endpoints (WTCH-01, WTCH-02, WTCH-03, TEST-04)
 
 ### Phase 3: LLM Chat Integration
 
@@ -129,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Foundation | 2/2 | Complete    | 2026-05-29 |
-| 2. Backend APIs | 0/TBD | Not started | - |
+| 2. Backend APIs | 0/3 | Not started | - |
 | 3. LLM Chat Integration | 0/TBD | Not started | - |
 | 4. Frontend Trading Terminal | 0/TBD | Not started | - |
 | 5. AI Chat Panel | 0/TBD | Not started | - |
