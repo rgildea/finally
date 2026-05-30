@@ -7,9 +7,9 @@
 
 ### Backend Application
 
-- [ ] **APP-01**: FastAPI app starts with a lifespan that launches the market data polling loop and initializes the SQLite database on first run
-- [ ] **APP-02**: FastAPI serves the Next.js static export from `/` (all non-API paths return `index.html`)
-- [ ] **APP-03**: `GET /api/health` returns `{"status": "ok"}` for container health checks
+- [x] **APP-01**: FastAPI app starts with a lifespan that launches the market data polling loop and initializes the SQLite database on first run
+- [x] **APP-02**: FastAPI serves the Next.js static export from `/` (all non-API paths return `index.html`)
+- [x] **APP-03**: `GET /api/health` returns `{"status": "ok"}` for container health checks
 
 ### Streaming
 
@@ -19,9 +19,9 @@
 
 ### Database
 
-- [ ] **DB-01**: SQLite database is created and seeded automatically on first startup — no manual migration step
-- [ ] **DB-02**: Schema includes: `users_profile`, `watchlist`, `positions`, `trades`, `portfolio_snapshots`, `chat_messages` tables
-- [ ] **DB-03**: Default seed data: one user profile (`id="default"`, `cash_balance=10000.0`) and 10 default watchlist tickers (AAPL, GOOGL, MSFT, AMZN, TSLA, NVDA, META, JPM, V, NFLX)
+- [x] **DB-01**: SQLite database is created and seeded automatically on first startup — no manual migration step
+- [x] **DB-02**: Schema includes: `users_profile`, `watchlist`, `positions`, `trades`, `portfolio_snapshots`, `chat_messages` tables
+- [x] **DB-03**: Default seed data: one user profile (`id="default"`, `cash_balance=10000.0`) and 10 default watchlist tickers (AAPL, GOOGL, MSFT, AMZN, TSLA, NVDA, META, JPM, V, NFLX)
 
 ### Portfolio
 
@@ -143,12 +143,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| APP-01 | Phase 1 | Pending |
-| APP-02 | Phase 1 | Pending |
-| APP-03 | Phase 1 | Pending |
-| DB-01 | Phase 1 | Pending |
-| DB-02 | Phase 1 | Pending |
-| DB-03 | Phase 1 | Pending |
+| APP-01 | Phase 1 | Complete |
+| APP-02 | Phase 1 | Complete |
+| APP-03 | Phase 1 | Complete |
+| DB-01 | Phase 1 | Complete |
+| DB-02 | Phase 1 | Complete |
+| DB-03 | Phase 1 | Complete |
 | STRM-01 | Phase 2 | Pending |
 | STRM-02 | Phase 2 | Pending |
 | STRM-03 | Phase 2 | Pending |
@@ -202,6 +202,7 @@
 | TEST-11 | Phase 6 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 56 total
 - Mapped to phases: 56
 - Unmapped: 0 ✓
