@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Backend Foundation** - FastAPI app with lifespan, SQLite database with lazy init and seed data (completed 2026-05-29)
 - [x] **Phase 2: Backend APIs** - SSE price streaming, portfolio CRUD, watchlist management, and backend unit tests (completed 2026-05-30)
-- [ ] **Phase 3: LLM Chat Integration** - LiteLLM to Cerebras structured output, auto-trade execution, mock mode
+- [x] **Phase 3: LLM Chat Integration** - LiteLLM to Cerebras structured output, auto-trade execution, mock mode (completed 2026-05-30)
 - [ ] **Phase 4: Frontend Trading Terminal** - Dark terminal UI, watchlist with price flashes, charts, portfolio heatmap, trade bar, SSE connection
 - [ ] **Phase 5: AI Chat Panel** - Streaming chat UI, inline trade confirmations, connected to backend chat API
 - [ ] **Phase 6: Docker and E2E Tests** - Multi-stage Dockerfile, start/stop scripts, Playwright E2E test suite
@@ -93,7 +93,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-  - [ ] 03-02-PLAN.md — Chat router: POST /api/chat with persistence, auto-execution of trades/watchlist changes, SSE streaming, router registration, integration tests (CHAT-01, CHAT-04, CHAT-05, TEST-03)
+  - [x] 03-02-PLAN.md — Chat router: POST /api/chat with persistence, auto-execution of trades/watchlist changes, SSE streaming, router registration, integration tests (CHAT-01, CHAT-04, CHAT-05, TEST-03)
 
 ### Phase 4: Frontend Trading Terminal
 
@@ -150,7 +150,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backend Foundation | 2/2 | Complete    | 2026-05-29 |
 | 2. Backend APIs | 3/3 | Complete    | 2026-05-30 |
-| 3. LLM Chat Integration | 1/2 | In Progress|  |
+| 3. LLM Chat Integration | 2/2 | Complete   | 2026-05-30 |
 | 4. Frontend Trading Terminal | 0/TBD | Not started | - |
 | 5. AI Chat Panel | 0/TBD | Not started | - |
 | 6. Docker and E2E Tests | 0/TBD | Not started | - |
