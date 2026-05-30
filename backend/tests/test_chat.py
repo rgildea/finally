@@ -358,3 +358,14 @@ async def test_trade_failure_surfaced(monkeypatch):
     body = resp.text
     # Error should be mentioned somewhere in the streamed body
     assert "cash" in body.lower() or "insufficient" in body.lower() or "could not" in body.lower()
+
+
+# ---------------------------------------------------------------------------
+# Task 2 (Plan 02): Router registration test
+# ---------------------------------------------------------------------------
+
+
+def test_chat_route_registered():
+    """The app exposes a POST route at /api/chat."""
+    routes = {(r.path, frozenset(r.methods)) for r in app.routes if hasattr(r, "methods")}
+    assert ("/api/chat", frozenset({"POST"})) in routes
