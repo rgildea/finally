@@ -23,8 +23,12 @@ async def price_event_stream() -> AsyncIterable[ServerSentEvent]:
     """
     while True:
         updates = await price_cache.get_all()
-        for ticker, update in updates.items():
-            yield ServerSentEvent(data=update.model_dump(), event="price_update")
+        if updates:
+            for ticker, update in updates.items():
+                yield ServerSentEvent(data=update.model_dump(), event="price_update")
+        else:
+            # Keep connection alive when cache is empty (prevents proxy timeouts)
+            yield ServerSentEvent(comment="ping")
         await asyncio.sleep(0.5)
 
 
