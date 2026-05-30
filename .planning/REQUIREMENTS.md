@@ -40,12 +40,12 @@
 
 ### LLM Chat
 
-- [ ] **CHAT-01**: `POST /api/chat` accepts a user message and returns a streaming response (token-by-token) from the LLM
-- [ ] **CHAT-02**: The backend constructs a prompt with current portfolio context (cash, positions with P&L, watchlist with live prices) and recent conversation history before calling the LLM
-- [ ] **CHAT-03**: The LLM is called via LiteLLM → OpenRouter → Cerebras (`openrouter/openai/gpt-oss-120b`) with structured output matching `{message, trades[], watchlist_changes[]}`
-- [ ] **CHAT-04**: Trades and watchlist changes in the LLM response are auto-executed before streaming the reply to the client
-- [ ] **CHAT-05**: Each user message and assistant response (with executed actions) is persisted to the `chat_messages` table
-- [ ] **CHAT-06**: When `LLM_MOCK=true`, the backend returns a deterministic mock response instead of calling OpenRouter
+- [x] **CHAT-01**: `POST /api/chat` accepts a user message and returns a streaming response (token-by-token) from the LLM
+- [x] **CHAT-02**: The backend constructs a prompt with current portfolio context (cash, positions with P&L, watchlist with live prices) and recent conversation history before calling the LLM
+- [x] **CHAT-03**: The LLM is called via LiteLLM → OpenRouter → Cerebras (`openrouter/openai/gpt-oss-120b`) with structured output matching `{message, trades[], watchlist_changes[]}`
+- [x] **CHAT-04**: Trades and watchlist changes in the LLM response are auto-executed before streaming the reply to the client
+- [x] **CHAT-05**: Each user message and assistant response (with executed actions) is persisted to the `chat_messages` table
+- [x] **CHAT-06**: When `LLM_MOCK=true`, the backend returns a deterministic mock response instead of calling OpenRouter
 
 ### Frontend — Core Layout
 
@@ -97,7 +97,7 @@
 
 - [x] **TEST-01**: Backend unit tests cover portfolio trade execution logic (buy, sell, insufficient cash, sell more than owned)
 - [x] **TEST-02**: Backend unit tests cover P&L calculations and portfolio summary
-- [ ] **TEST-03**: Backend unit tests cover LLM structured output parsing (valid schema, malformed response)
+- [x] **TEST-03**: Backend unit tests cover LLM structured output parsing (valid schema, malformed response)
 - [x] **TEST-04**: Backend unit tests cover API route response shapes and status codes
 - [ ] **TEST-05**: Frontend unit tests cover price flash animation trigger on price change
 - [ ] **TEST-06**: Frontend unit tests cover watchlist CRUD operations
@@ -161,12 +161,12 @@
 | WTCH-01 | Phase 2 | Complete |
 | WTCH-02 | Phase 2 | Complete |
 | WTCH-03 | Phase 2 | Complete |
-| CHAT-01 | Phase 3 | Pending |
-| CHAT-02 | Phase 3 | Pending |
-| CHAT-03 | Phase 3 | Pending |
-| CHAT-04 | Phase 3 | Pending |
-| CHAT-05 | Phase 3 | Pending |
-| CHAT-06 | Phase 3 | Pending |
+| CHAT-01 | Phase 3 | Complete |
+| CHAT-02 | Phase 3 | Complete |
+| CHAT-03 | Phase 3 | Complete |
+| CHAT-04 | Phase 3 | Complete |
+| CHAT-05 | Phase 3 | Complete |
+| CHAT-06 | Phase 3 | Complete |
 | FE-01 | Phase 4 | Pending |
 | FE-02 | Phase 4 | Pending |
 | FE-03 | Phase 4 | Pending |
@@ -191,7 +191,7 @@
 | DOCK-05 | Phase 6 | Pending |
 | TEST-01 | Phase 2 | Complete |
 | TEST-02 | Phase 2 | Complete |
-| TEST-03 | Phase 3 | Pending |
+| TEST-03 | Phase 3 | Complete |
 | TEST-04 | Phase 2 | Complete |
 | TEST-05 | Phase 4 | Pending |
 | TEST-06 | Phase 4 | Pending |
