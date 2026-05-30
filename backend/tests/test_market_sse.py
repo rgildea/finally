@@ -83,5 +83,6 @@ async def test_sse_reads_cache():
         finally:
             await g.aclose()
 
-    # Empty cache → no events yielded before the sleep (which was the first cycle)
-    assert len(events_collected) == 0
+    # Empty cache → only a keep-alive ping (comment), no price_update events
+    price_events = [e for e in events_collected if e.event == "price_update"]
+    assert len(price_events) == 0

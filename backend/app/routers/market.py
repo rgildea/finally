@@ -5,7 +5,6 @@ at ~500ms cadence. Each event contains ticker, price, prev_price, change_pct, ti
 """
 
 import asyncio
-from collections.abc import AsyncIterable
 
 from fastapi import APIRouter
 from fastapi.sse import EventSourceResponse, ServerSentEvent
@@ -15,7 +14,7 @@ from app.market.cache import price_cache
 router = APIRouter(prefix="/api", tags=["market"])
 
 
-async def price_event_stream() -> AsyncIterable[ServerSentEvent]:
+async def price_event_stream():
     """Async generator yielding ServerSentEvent per ticker per cycle.
 
     Reads exclusively from price_cache.get_all(); never touches the data source.
@@ -33,6 +32,7 @@ async def price_event_stream() -> AsyncIterable[ServerSentEvent]:
 
 
 @router.get("/stream/prices", response_class=EventSourceResponse)
-async def stream_prices() -> AsyncIterable[ServerSentEvent]:
+async def stream_prices():
     """Stream live price updates as SSE events."""
-    return price_event_stream()
+    async for event in price_event_stream():
+        yield event
