@@ -84,8 +84,16 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. When `LLM_MOCK=true`, the endpoint returns a deterministic mock response without calling OpenRouter
   6. Unit tests cover structured output parsing for valid and malformed LLM responses
 
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: no
+
+**Wave 1**
+
+  - [ ] 03-01-PLAN.md — Chat LLM core: install litellm, structured-output schema, mock-gated Cerebras call, portfolio-context + history builders, unit tests (CHAT-02, CHAT-03, CHAT-06, TEST-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+  - [ ] 03-02-PLAN.md — Chat router: POST /api/chat with persistence, auto-execution of trades/watchlist changes, SSE streaming, router registration, integration tests (CHAT-01, CHAT-04, CHAT-05, TEST-03)
 
 ### Phase 4: Frontend Trading Terminal
 
@@ -142,8 +150,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backend Foundation | 2/2 | Complete    | 2026-05-29 |
 | 2. Backend APIs | 3/3 | Complete    | 2026-05-30 |
-| 3. LLM Chat Integration | 0/TBD | Not started | - |
+| 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Trading Terminal | 0/TBD | Not started | - |
 | 5. AI Chat Panel | 0/TBD | Not started | - |
 | 6. Docker and E2E Tests | 0/TBD | Not started | - |
-</content>
