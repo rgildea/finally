@@ -207,7 +207,6 @@ async def get_portfolio() -> dict:
     prices = await price_cache.get_many(tickers) if tickers else {}
 
     positions = []
-    total_market_value = 0.0
     for row in rows:
         ticker = row["ticker"]
         qty = row["quantity"]
@@ -216,7 +215,6 @@ async def get_portfolio() -> dict:
         market_value = qty * current_price
         unrealized_pnl = (current_price - avg_cost) * qty
         pnl_pct = (current_price - avg_cost) / avg_cost * 100 if avg_cost else 0.0
-        total_market_value += market_value
         positions.append({
             "ticker": ticker,
             "quantity": qty,
@@ -227,7 +225,7 @@ async def get_portfolio() -> dict:
             "pnl_pct": round(pnl_pct, 2),
         })
 
-    total_value = round(profile["cash_balance"] + total_market_value, 2)
+    total_value = await _compute_total_value()
     return {
         "cash_balance": round(profile["cash_balance"], 2),
         "total_value": total_value,
