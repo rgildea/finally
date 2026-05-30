@@ -89,7 +89,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Wave 1**
 
-  - [ ] 03-01-PLAN.md — Chat LLM core: install litellm, structured-output schema, mock-gated Cerebras call, portfolio-context + history builders, unit tests (CHAT-02, CHAT-03, CHAT-06, TEST-03)
+  - [x] 03-01-PLAN.md — Chat LLM core: install litellm, structured-output schema, mock-gated Cerebras call, portfolio-context + history builders, unit tests (CHAT-02, CHAT-03, CHAT-06, TEST-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -150,7 +150,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backend Foundation | 2/2 | Complete    | 2026-05-29 |
 | 2. Backend APIs | 3/3 | Complete    | 2026-05-30 |
-| 3. LLM Chat Integration | 0/2 | Not started | - |
+| 3. LLM Chat Integration | 1/2 | In Progress|  |
 | 4. Frontend Trading Terminal | 0/TBD | Not started | - |
 | 5. AI Chat Panel | 0/TBD | Not started | - |
 | 6. Docker and E2E Tests | 0/TBD | Not started | - |
