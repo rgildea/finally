@@ -12,6 +12,7 @@ from app.db.database import get_watchlist_tickers, init_db  # noqa: E402
 from app.market import create_market_data_source  # noqa: E402
 from app.market.loop import polling_loop  # noqa: E402
 from app.routers.health import router as health_router  # noqa: E402
+from app.routers.market import router as market_router  # noqa: E402
 
 
 @asynccontextmanager
@@ -27,6 +28,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(health_router)
+app.include_router(market_router)
 
 static_dir = Path(__file__).parent.parent.parent / "frontend" / "out"
 if static_dir.exists():
