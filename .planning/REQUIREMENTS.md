@@ -13,9 +13,9 @@
 
 ### Streaming
 
-- [ ] **STRM-01**: `GET /api/stream/prices` opens a long-lived SSE connection and pushes price updates for all watched tickers at ~500ms cadence
-- [ ] **STRM-02**: Each SSE event contains ticker, price, prev_price, change_pct, and timestamp
-- [ ] **STRM-03**: SSE endpoint reads from the shared `price_cache` singleton (not the data source directly)
+- [x] **STRM-01**: `GET /api/stream/prices` opens a long-lived SSE connection and pushes price updates for all watched tickers at ~500ms cadence
+- [x] **STRM-02**: Each SSE event contains ticker, price, prev_price, change_pct, and timestamp
+- [x] **STRM-03**: SSE endpoint reads from the shared `price_cache` singleton (not the data source directly)
 
 ### Database
 
@@ -25,18 +25,18 @@
 
 ### Portfolio
 
-- [ ] **PORT-01**: `GET /api/portfolio` returns current positions, cash balance, total portfolio value, and unrealized P&L for each position
-- [ ] **PORT-02**: `POST /api/portfolio/trade` executes a market order — buy or sell — at the current cached price with instant fill; validates sufficient cash (buy) or shares (sell)
-- [ ] **PORT-03**: Successful trades update the `positions` table and debit/credit the `users_profile` cash balance atomically
-- [ ] **PORT-04**: Each trade is appended to the `trades` table as an immutable log entry
-- [ ] **PORT-05**: `GET /api/portfolio/history` returns portfolio value snapshots over time for the P&L chart
-- [ ] **PORT-06**: A background task records a portfolio snapshot to `portfolio_snapshots` at a regular interval (e.g., every 30 seconds)
+- [x] **PORT-01**: `GET /api/portfolio` returns current positions, cash balance, total portfolio value, and unrealized P&L for each position
+- [x] **PORT-02**: `POST /api/portfolio/trade` executes a market order — buy or sell — at the current cached price with instant fill; validates sufficient cash (buy) or shares (sell)
+- [x] **PORT-03**: Successful trades update the `positions` table and debit/credit the `users_profile` cash balance atomically
+- [x] **PORT-04**: Each trade is appended to the `trades` table as an immutable log entry
+- [x] **PORT-05**: `GET /api/portfolio/history` returns portfolio value snapshots over time for the P&L chart
+- [x] **PORT-06**: A background task records a portfolio snapshot to `portfolio_snapshots` at a regular interval (e.g., every 30 seconds)
 
 ### Watchlist
 
-- [ ] **WTCH-01**: `GET /api/watchlist` returns all watched tickers with their latest prices from the price cache
-- [ ] **WTCH-02**: `POST /api/watchlist` adds a ticker to the watchlist; the polling loop picks it up on its next cycle
-- [ ] **WTCH-03**: `DELETE /api/watchlist/{ticker}` removes a ticker from the watchlist
+- [x] **WTCH-01**: `GET /api/watchlist` returns all watched tickers with their latest prices from the price cache
+- [x] **WTCH-02**: `POST /api/watchlist` adds a ticker to the watchlist; the polling loop picks it up on its next cycle
+- [x] **WTCH-03**: `DELETE /api/watchlist/{ticker}` removes a ticker from the watchlist
 
 ### LLM Chat
 
@@ -95,10 +95,10 @@
 
 ### Testing
 
-- [ ] **TEST-01**: Backend unit tests cover portfolio trade execution logic (buy, sell, insufficient cash, sell more than owned)
-- [ ] **TEST-02**: Backend unit tests cover P&L calculations and portfolio summary
+- [x] **TEST-01**: Backend unit tests cover portfolio trade execution logic (buy, sell, insufficient cash, sell more than owned)
+- [x] **TEST-02**: Backend unit tests cover P&L calculations and portfolio summary
 - [ ] **TEST-03**: Backend unit tests cover LLM structured output parsing (valid schema, malformed response)
-- [ ] **TEST-04**: Backend unit tests cover API route response shapes and status codes
+- [x] **TEST-04**: Backend unit tests cover API route response shapes and status codes
 - [ ] **TEST-05**: Frontend unit tests cover price flash animation trigger on price change
 - [ ] **TEST-06**: Frontend unit tests cover watchlist CRUD operations
 - [ ] **TEST-07**: Playwright E2E test: fresh start — default watchlist with 10 tickers, $10k balance, prices streaming
@@ -149,18 +149,18 @@
 | DB-01 | Phase 1 | Complete |
 | DB-02 | Phase 1 | Complete |
 | DB-03 | Phase 1 | Complete |
-| STRM-01 | Phase 2 | Pending |
-| STRM-02 | Phase 2 | Pending |
-| STRM-03 | Phase 2 | Pending |
-| PORT-01 | Phase 2 | Pending |
-| PORT-02 | Phase 2 | Pending |
-| PORT-03 | Phase 2 | Pending |
-| PORT-04 | Phase 2 | Pending |
-| PORT-05 | Phase 2 | Pending |
-| PORT-06 | Phase 2 | Pending |
-| WTCH-01 | Phase 2 | Pending |
-| WTCH-02 | Phase 2 | Pending |
-| WTCH-03 | Phase 2 | Pending |
+| STRM-01 | Phase 2 | Complete |
+| STRM-02 | Phase 2 | Complete |
+| STRM-03 | Phase 2 | Complete |
+| PORT-01 | Phase 2 | Complete |
+| PORT-02 | Phase 2 | Complete |
+| PORT-03 | Phase 2 | Complete |
+| PORT-04 | Phase 2 | Complete |
+| PORT-05 | Phase 2 | Complete |
+| PORT-06 | Phase 2 | Complete |
+| WTCH-01 | Phase 2 | Complete |
+| WTCH-02 | Phase 2 | Complete |
+| WTCH-03 | Phase 2 | Complete |
 | CHAT-01 | Phase 3 | Pending |
 | CHAT-02 | Phase 3 | Pending |
 | CHAT-03 | Phase 3 | Pending |
@@ -189,10 +189,10 @@
 | DOCK-03 | Phase 6 | Pending |
 | DOCK-04 | Phase 6 | Pending |
 | DOCK-05 | Phase 6 | Pending |
-| TEST-01 | Phase 2 | Pending |
-| TEST-02 | Phase 2 | Pending |
+| TEST-01 | Phase 2 | Complete |
+| TEST-02 | Phase 2 | Complete |
 | TEST-03 | Phase 3 | Pending |
-| TEST-04 | Phase 2 | Pending |
+| TEST-04 | Phase 2 | Complete |
 | TEST-05 | Phase 4 | Pending |
 | TEST-06 | Phase 4 | Pending |
 | TEST-07 | Phase 6 | Pending |
