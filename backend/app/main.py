@@ -15,6 +15,7 @@ from app.routers.health import router as health_router  # noqa: E402
 from app.routers.market import router as market_router  # noqa: E402
 from app.routers.portfolio import router as portfolio_router  # noqa: E402
 from app.routers.portfolio import snapshot_recorder  # noqa: E402
+from app.routers.watchlist import router as watchlist_router  # noqa: E402
 
 
 @asynccontextmanager
@@ -34,6 +35,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(health_router)
 app.include_router(market_router)
 app.include_router(portfolio_router)
+app.include_router(watchlist_router)
 
 static_dir = Path(__file__).parent.parent.parent / "frontend" / "out"
 if static_dir.exists():
