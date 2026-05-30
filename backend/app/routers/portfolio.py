@@ -97,7 +97,8 @@ def execute_trade(ticker: str, side: str, quantity: float, price: float) -> dict
                 if not existing or existing["quantity"] < quantity:
                     raise ValueError("Insufficient shares")
                 remaining = existing["quantity"] - quantity
-                if remaining == 0:
+                EPSILON = 1e-9  # smaller than any meaningful fractional share quantity
+                if remaining <= EPSILON:
                     con.execute("DELETE FROM positions WHERE id=?", (existing["id"],))
                 else:
                     con.execute(
