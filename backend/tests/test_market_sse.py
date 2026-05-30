@@ -57,45 +57,31 @@ async def test_sse_event_value():
 
 
 async def test_sse_reads_cache():
-    """With an empty cache, the generator yields no events in its first cycle."""
-    from app.routers.market import price_event_stream
+    """With an empty cache, the generator yields no events in its first cycle.
 
-    # Cache is empty (cleared by fixture)
-    gen = price_event_stream()
-
-    # Patch asyncio.sleep to avoid waiting; inject an exception after first sleep
-    # to break the infinite loop. We use a sentinel approach:
-    # wrap the generator to collect events from the first cycle only.
+    Verifies the generator reads from price_cache.get_all() rather than any
+    external data source. We drive it through one cycle by replacing asyncio.sleep
+    with a coroutine that raises CancelledError to terminate the loop.
+    """
     import asyncio
-    from unittest.mock import patch, AsyncMock
+    from unittest.mock import patch
+
+    from app.routers.market import price_event_stream
 
     events_collected = []
 
-    async def run_one_cycle():
-        """Drive the generator through exactly one sleep cycle."""
-        sleep_called = False
+    async def mock_sleep(_delay):
+        raise asyncio.CancelledError
 
-        original_sleep = asyncio.sleep
+    with patch("app.routers.market.asyncio.sleep", side_effect=mock_sleep):
+        g = price_event_stream()
+        try:
+            async for event in g:
+                events_collected.append(event)
+        except asyncio.CancelledError:
+            pass
+        finally:
+            await g.aclose()
 
-        async def mock_sleep(delay):
-            nonlocal sleep_called
-            sleep_called = True
-            raise StopAsyncIteration
-
-        with patch("app.routers.market.asyncio") as mock_asyncio:
-            mock_asyncio.sleep = mock_sleep
-            # Recreate generator with mocked asyncio
-            from app.routers.market import price_event_stream as pes
-            g = pes()
-            try:
-                while True:
-                    event = await g.__anext__()
-                    events_collected.append(event)
-            except StopAsyncIteration:
-                pass
-            finally:
-                await g.aclose()
-
-    await run_one_cycle()
-    # Empty cache → no events before the sleep
+    # Empty cache → no events yielded before the sleep (which was the first cycle)
     assert len(events_collected) == 0
