@@ -43,7 +43,7 @@ async def get_watchlist() -> list:
 
 
 @router.post("/watchlist")
-def add_ticker(req: WatchlistRequest) -> dict:
+async def add_ticker(req: WatchlistRequest) -> dict:
     """Add a ticker to the watchlist. Idempotent via INSERT OR IGNORE."""
     now = datetime.now(timezone.utc).isoformat()
     con = get_connection()
