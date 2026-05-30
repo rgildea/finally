@@ -65,3 +65,12 @@ def test_get_watchlist_tickers():
     assert isinstance(tickers, list)
     assert len(tickers) == 10
     assert "AAPL" in tickers
+
+
+def test_busy_timeout_set():
+    con = get_connection()
+    try:
+        result = con.execute("PRAGMA busy_timeout").fetchone()[0]
+        assert result == 5000
+    finally:
+        con.close()
