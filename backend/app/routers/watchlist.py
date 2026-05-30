@@ -2,7 +2,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator
 
 from app.db.database import get_connection
@@ -63,6 +63,8 @@ def add_ticker(req: WatchlistRequest) -> dict:
 async def remove_ticker(ticker: str) -> dict:
     """Remove a ticker from the watchlist and clear it from the price cache."""
     ticker = ticker.upper().strip()
+    if not ticker or len(ticker) > 10:
+        raise HTTPException(status_code=422, detail="Invalid ticker")
     con = get_connection()
     try:
         with con:
