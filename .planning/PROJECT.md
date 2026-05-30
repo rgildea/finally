@@ -85,12 +85,12 @@ The complete flow works end-to-end: prices stream live, the user can trade manua
 | SQLite over Postgres | No auth = no multi-user = no DB server needed | — Pending |
 | Single Docker container | One `docker run` for students; no orchestration | — Pending |
 | Market orders only | Eliminates order book, limit logic, partial fills | — Pending |
-| LiteLLM → Cerebras | Fast inference, structured outputs, OpenRouter routing | — Pending |
+| LiteLLM → Cerebras | Fast inference, structured outputs, OpenRouter routing | ✓ Validated in Phase 03 |
 | GBM simulator default | No API key required; realistic correlated price action | ✓ Validated |
 | Strategy pattern (MarketDataSource ABC) | All downstream code stays source-agnostic | ✓ Validated |
 
 ---
-*Last updated: 2026-05-29 after initialization*
+*Last updated: 2026-05-30 after Phase 03 (LLM Chat Integration) complete*
 
 ## Evolution
 
