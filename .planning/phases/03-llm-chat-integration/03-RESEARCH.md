@@ -431,17 +431,17 @@ async def test_malformed_llm_response():
 
 **Risk mitigation for A2:** The spec says "streams a token-by-token LLM response back to the caller." Since the structured call returns the full message as a string, streaming that string character/word-by-word satisfies the spirit of the requirement. The frontend `EventSource` will see progressive text delivery.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Streaming granularity**
    - What we know: The spec says "token-by-token" streaming. With the two-step approach, we stream a pre-obtained string.
    - What's unclear: Whether word-by-word chunking is sufficient UX vs. true token streaming.
-   - Recommendation: Word-by-word is fine for the demo. If true token streaming is required, use `acompletion(stream=True)` without structured output, then parse the full accumulated content as JSON after the stream ends.
+   - RESOLVED: Word-by-word is fine for the demo. If true token streaming is required, use `acompletion(stream=True)` without structured output, then parse the full accumulated content as JSON after the stream ends.
 
 2. **Watchlist action: "remove" vs "delete"**
    - What we know: The PLAN.md schema says `{"ticker": "PYPL", "action": "add"}` — no "remove" vs "delete" distinction shown.
    - What's unclear: Should the schema allow "remove" or "delete" for removing watchlist entries?
-   - Recommendation: Use "add" and "remove" in the Pydantic model. The existing `DELETE /api/watchlist/{ticker}` backend function handles removal.
+   - RESOLVED: Use "add" and "remove" in the Pydantic model. The existing `DELETE /api/watchlist/{ticker}` backend function handles removal.
 
 ## Environment Availability
 
