@@ -2,6 +2,7 @@
 import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import httpx
 import pytest
 
 import app.db.database as db_module
@@ -14,6 +15,7 @@ from app.chat.llm import (
     get_llm_response,
 )
 from app.db.database import get_connection, init_db
+from app.main import app
 from app.market.cache import price_cache
 from app.market.interface import PriceUpdate
 
@@ -207,3 +209,163 @@ async def test_llm_called_with_correct_params(monkeypatch):
         reasoning_effort="low",
         extra_body=EXTRA_BODY,
     )
+
+
+# ---------------------------------------------------------------------------
+# Task 1 (Plan 02): Chat router integration tests (CHAT-01, CHAT-04, CHAT-05)
+# ---------------------------------------------------------------------------
+
+
+def _msg_count() -> int:
+    """Return total count of chat_messages rows."""
+    con = get_connection()
+    try:
+        return con.execute("SELECT COUNT(*) FROM chat_messages").fetchone()[0]
+    finally:
+        con.close()
+
+
+def _get_messages() -> list:
+    """Return all chat_messages ordered by created_at."""
+    con = get_connection()
+    try:
+        rows = con.execute(
+            "SELECT role, content, actions FROM chat_messages ORDER BY created_at"
+        ).fetchall()
+        return [dict(row) for row in rows]
+    finally:
+        con.close()
+
+
+def _cash() -> float:
+    con = get_connection()
+    try:
+        return con.execute("SELECT cash_balance FROM users_profile WHERE id='default'").fetchone()["cash_balance"]
+    finally:
+        con.close()
+
+
+def _position(ticker: str):
+    con = get_connection()
+    try:
+        return con.execute(
+            "SELECT * FROM positions WHERE user_id='default' AND ticker=?", (ticker,)
+        ).fetchone()
+    finally:
+        con.close()
+
+
+async def test_chat_streams_response(monkeypatch):
+    """POST /api/chat with LLM_MOCK=true returns 200 with text/event-stream and body ending in [DONE]."""
+    monkeypatch.setenv("LLM_MOCK", "true")
+    monkeypatch.setattr(price_cache, "get_many", AsyncMock(return_value={}))
+
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        resp = await client.post("/api/chat", json={"message": "hello"})
+
+    assert resp.status_code == 200
+    assert "text/event-stream" in resp.headers["content-type"]
+    assert "[DONE]" in resp.text
+
+
+async def test_messages_persisted(monkeypatch):
+    """After one chat call, exactly two new chat_messages rows exist: user and assistant."""
+    monkeypatch.setenv("LLM_MOCK", "true")
+    monkeypatch.setattr(price_cache, "get_many", AsyncMock(return_value={}))
+
+    count_before = _msg_count()
+
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        resp = await client.post("/api/chat", json={"message": "test persistence"})
+
+    assert resp.status_code == 200
+    count_after = _msg_count()
+    assert count_after == count_before + 2
+
+    msgs = _get_messages()
+    # Last two: user then assistant
+    assert msgs[-2]["role"] == "user"
+    assert msgs[-2]["content"] == "test persistence"
+    assert msgs[-1]["role"] == "assistant"
+
+
+async def test_auto_execute_trades(monkeypatch):
+    """When LLM response contains a buy trade, it is executed before streaming and reflected in DB."""
+    monkeypatch.setenv("LLM_MOCK", "false")
+    monkeypatch.setattr(price_cache, "get_many", AsyncMock(return_value={}))
+
+    aapl_price = _make_price("AAPL", 150.0)
+    monkeypatch.setattr(price_cache, "get", AsyncMock(return_value=aapl_price))
+
+    mock_resp = ChatResponse(
+        message="Buying 5 shares of AAPL for you.",
+        trades=[TradeAction(ticker="AAPL", side="buy", quantity=5)],
+        watchlist_changes=[],
+    )
+
+    with patch("app.routers.chat.get_llm_response", new_callable=AsyncMock, return_value=mock_resp):
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client:
+            resp = await client.post("/api/chat", json={"message": "buy 5 shares of AAPL"})
+
+    assert resp.status_code == 200
+
+    # Position should exist in DB
+    pos = _position("AAPL")
+    assert pos is not None
+    assert pos["quantity"] == 5
+
+    # Cash should have decreased
+    assert _cash() < 10000.0
+
+    # Assistant message should have actions JSON
+    msgs = _get_messages()
+    assistant_msg = msgs[-1]
+    assert assistant_msg["role"] == "assistant"
+    assert assistant_msg["actions"] is not None
+    actions = json.loads(assistant_msg["actions"])
+    assert len(actions["trades"]) == 1
+    assert actions["trades"][0]["ticker"] == "AAPL"
+
+
+async def test_trade_failure_surfaced(monkeypatch):
+    """When a trade fails (insufficient cash), the response is still 200 and body mentions the error."""
+    monkeypatch.setenv("LLM_MOCK", "false")
+    monkeypatch.setattr(price_cache, "get_many", AsyncMock(return_value={}))
+
+    # Price so high it exceeds $10k balance
+    expensive_price = _make_price("AAPL", 99999.0)
+    monkeypatch.setattr(price_cache, "get", AsyncMock(return_value=expensive_price))
+
+    mock_resp = ChatResponse(
+        message="Buying 1 share of AAPL.",
+        trades=[TradeAction(ticker="AAPL", side="buy", quantity=1)],
+        watchlist_changes=[],
+    )
+
+    with patch("app.routers.chat.get_llm_response", new_callable=AsyncMock, return_value=mock_resp):
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client:
+            resp = await client.post("/api/chat", json={"message": "buy AAPL"})
+
+    assert resp.status_code == 200
+    body = resp.text
+    # Error should be mentioned somewhere in the streamed body
+    assert "cash" in body.lower() or "insufficient" in body.lower() or "could not" in body.lower()
+
+
+# ---------------------------------------------------------------------------
+# Task 2 (Plan 02): Router registration test
+# ---------------------------------------------------------------------------
+
+
+def test_chat_route_registered():
+    """The app exposes a POST route at /api/chat."""
+    routes = {(r.path, frozenset(r.methods)) for r in app.routes if hasattr(r, "methods")}
+    assert ("/api/chat", frozenset({"POST"})) in routes
