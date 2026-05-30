@@ -104,7 +104,7 @@ async def test_context_includes_portfolio(monkeypatch):
 
     context = await build_portfolio_context()
 
-    assert "10000" in context or "9000" in context  # cash (after buy: 10000 - 1000 = 9000)
+    assert "9,000.00" in context  # cash after buy: 10000 - 1000 = 9000
     assert "AAPL" in context
     assert "MSFT" in context  # watchlist ticker (default seed)
 
@@ -117,7 +117,7 @@ async def test_context_empty_positions(monkeypatch):
 
     context = await build_portfolio_context()
 
-    assert "10000" in context  # default cash
+    assert "10,000.00" in context  # default cash
     # Should not crash and should have some content
     assert isinstance(context, str)
     assert len(context) > 0
